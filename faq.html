@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FAQ - AniStream VF</title>
-<meta name="description" content="Questions fréquentes sur AniStream VF : différence avec Anime Sama, légalité, installation APK, profils, téléchargements.">
+<meta name="description" content="Questions fréquentes sur AniStream VF : installation, streaming, téléchargements, abonnements, watch party.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://anistreamvf.github.io/faq.html">
 <meta property="og:title" content="FAQ AniStream VF">
-<meta property="og:description" content="Tout savoir sur AniStream VF : fonctionnement, abonnements, sécurité.">
+<meta property="og:description" content="Toutes les réponses à vos questions sur AniStream VF.">
 <meta property="og:url" content="https://anistreamvf.github.io/faq.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="AniStream VF">
@@ -28,6 +28,7 @@
 <a href="index.html#gallery">Aperçu</a>
 <a href="faq.html" class="active">FAQ</a>
 <a href="privacy.html">Confidentialité</a>
+<a href="conditions-utilisation.html">CGU</a>
 <a href="index.html#download">Télécharger</a>
 <a href="login.html" class="nav-cta">Compte</a>
 </div>
@@ -35,61 +36,83 @@
 </header>
 
 <section class="page-header">
-<h1>FAQ</h1>
+<h1>Questions fréquentes</h1>
 <p>Tout ce que vous devez savoir sur AniStream.</p>
 </section>
 
-<section class="faq-page">
+<section class="faq-section">
 <div class="faq-list">
 
-<div class="faq-card">
-<h3>Pourquoi AniStream plutôt qu'Anime Sama ?</h3>
-<p>Anime Sama est un site web, pas une application native. AniStream est une véritable application Android avec un lecteur ExoPlayer optimisé, une expérience sans publicité (abonnement Starter), un mode hors-ligne, des profils multiples, et une interface pensée pour la TV et le mobile. L'installation est aussi simple qu'un APK.</p>
+<div class="faq-item">
+<button class="faq-question" aria-expanded="false">
+<span>Qu'est-ce qu'AniStream ?</span>
+<svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+</button>
+<div class="faq-answer"><p>AniStream est une application Android de streaming animé gratuite. Elle propose un catalogue de plus de 2000 animes en VF et VOSTFR, avec des fonctionnalités comme le streaming HD, les téléchargements hors-ligne, le Watch Party et la gestion multi-profils.</p></div>
 </div>
 
-<div class="faq-card">
-<h3>AniStream est-il gratuit ?</h3>
-<p>Oui, AniStream est disponible gratuitement avec un accès complet au catalogue, au streaming HD et aux fonctionnalités de base. Un abonnement Starter optionnel (4,99 €/mois) supprime les publicités en début d'épisode, débloque 5 profils et les téléchargements.</p>
+<div class="faq-item">
+<button class="faq-question" aria-expanded="false">
+<span>L'application est-elle gratuite ?</span>
+<svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+</button>
+<div class="faq-answer"><p>Oui, AniStream est gratuit avec une formule Free (3 profils, publicités en début d'épisode). Un abonnement Starter à 4,99 €/mois supprime les publicités, permet 5 profils et active les téléchargements.</p></div>
 </div>
 
-<div class="faq-card">
-<h3>Où sont hébergées les vidéos ?</h3>
-<p>AniStream ne stocke aucun fichier vidéo sur ses serveurs. Les vidéos sont lues depuis des plateformes d'hébergement tierces (Sibnet, Sendvid, Vidmoly, etc.). Nous ne faisons que faciliter l'accès au contenu déjà disponible publiquement.</p>
+<div class="faq-item">
+<button class="faq-question" aria-expanded="false">
+<span>Comment installer l'APK ?</span>
+<svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+</button>
+<div class="faq-answer"><p>Téléchargez le fichier APK depuis notre site. Avant l'installation, activez "Installer depuis des sources inconnues" dans les paramètres de sécurité de votre appareil Android. AniStream est compatible Android 8.0 et supérieur.</p></div>
 </div>
 
-<div class="faq-card">
-<h3>Est-ce légal ?</h3>
-<p>AniStream est un lecteur vidéo. Nous n'hébergeons, ne distribuons ni ne mettons en ligne aucun contenu protégé. L'application fonctionne comme un navigateur : elle affiche des vidéos hébergées par des tiers. Consultez notre <a href="privacy.html">Politique de confidentialité</a> pour plus de détails.</p>
+<div class="faq-item">
+<button class="faq-question" aria-expanded="false">
+<span>Puis-je télécharger des épisodes ?</span>
+<svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+</button>
+<div class="faq-answer"><p>Oui, les abonnés Starter peuvent télécharger leurs épisodes préférés pour les regarder hors-ligne, sans limite de stockage ou de quantité. La fonctionnalité de téléchargement n'est pas disponible sur la formule gratuite.</p></div>
 </div>
 
-<div class="faq-card">
-<h3>Mes données sont-elles sécurisées ?</h3>
-<p>Oui. Les mots de passe sont hachés avec bcrypt, les URLs vidéo sont chiffrées (XOR + Base64), et aucun cookie ou traceur publicitaire n'est utilisé. Les données de profil sont stockées localement sur votre appareil.</p>
+<div class="faq-item">
+<button class="faq-question" aria-expanded="false">
+<span>Qu'est-ce que le Watch Party ?</span>
+<svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+</button>
+<div class="faq-answer"><p>Le Watch Party vous permet de regarder des épisodes en synchronisation avec vos amis. Créez une session, partagez le code d'accès et profitez d'un chat intégré pour commenter en direct. Disponible sur toutes les formules.</p></div>
 </div>
 
-<div class="faq-card">
-<h3>Puis-je regarder avec des amis ?</h3>
-<p>Oui, la fonctionnalité Watch Party vous permet de synchroniser la lecture d'un épisode avec vos amis, avec un chat intégré. Idéal pour les soirées anime à distance.</p>
+<div class="faq-item">
+<button class="faq-question" aria-expanded="false">
+<span>Comment créer un compte ?</span>
+<svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+</button>
+<div class="faq-answer"><p>Lancez l'application et appuyez sur "Créer un compte". Renseignez votre email, un nom d'utilisateur et un mot de passe. Votre compte est créé immédiatement et vous pouvez ajouter jusqu'à 3 profils personnalisés.</p></div>
 </div>
 
-<div class="faq-card">
-<h3>Combien de profils puis-je créer ?</h3>
-<p>Jusqu'à 3 profils avec le compte gratuit, et 5 profils avec l'abonnement Starter. Chaque profil a son propre historique et sa propre watchlist.</p>
+<div class="faq-item">
+<button class="faq-question" aria-expanded="false">
+<span>Mes données sont-elles protégées ?</span>
+<svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+</button>
+<div class="faq-answer"><p>Absolument. Les mots de passe sont hachés avec bcrypt, les URLs vidéo sont chiffrées, et aucun cookie ou traceur publicitaire n'est utilisé. Consultez notre <a href="privacy.html">politique de confidentialité</a> pour plus de détails.</p></div>
 </div>
 
-<div class="faq-card">
-<h3>Comment installer l'APK ?</h3>
-<p>Téléchargez le fichier APK depuis notre site, ouvrez-le, et autorisez l'installation depuis "Sources inconnues" si votre appareil vous le demande. Aucun Google Play Store requis.</p>
+<div class="faq-item">
+<button class="faq-question" aria-expanded="false">
+<span>Puis-je annuler mon abonnement ?</span>
+<svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+</button>
+<div class="faq-answer"><p>Oui, vous pouvez annuler à tout moment depuis les paramètres de votre compte. L'abonnement reste actif jusqu'à la fin de la période payée. Aucune période d'engagement n'est requise.</p></div>
 </div>
 
-<div class="faq-card">
-<h3>Y a-t-il des publicités ?</h3>
-<p>Les utilisateurs gratuits voient une courte publicité avant chaque épisode. Les abonnés Starter et Premium en sont exemptés. Il n'y a aucune publicité intrusive dans l'interface de l'application.</p>
-</div>
-
-<div class="faq-card">
-<h3>Les vidéos sont-elles en VF ou VOSTFR ?</h3>
-<p>Les deux sont disponibles. Pour chaque anime, vous pouvez choisir entre la version française (VF) et la version originale sous-titrée (VOSTFR) selon les épisodes disponibles.</p>
+<div class="faq-item">
+<button class="faq-question" aria-expanded="false">
+<span>D'où viennent les vidéos ?</span>
+<svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+</button>
+<div class="faq-answer"><p>AniStream ne stocke aucun fichier vidéo sur ses serveurs. Les vidéos sont lues depuis des plateformes d'hébergement tierces (Sibnet, Sendvid, Vidmoly). Nous agrégeons uniquement les liens et fournissons un lecteur optimisé.</p></div>
 </div>
 
 </div>
@@ -109,7 +132,9 @@
 <a href="index.html#download">Télécharger</a>
 <a href="faq.html">FAQ</a>
 <a href="login.html">Compte</a>
+<a href="account.html">Paramètres</a>
 <a href="privacy.html">Politique de confidentialité</a>
+<a href="conditions-utilisation.html">Conditions d'utilisation</a>
 </div>
 <div class="footer-col">
 <h4>Légal</h4>
@@ -120,6 +145,23 @@
 <p>&copy; 2026 AniStream. Tous droits réservés.</p>
 </div>
 </footer>
+
+<script>
+// Accordéon FAQ
+document.querySelectorAll('.faq-question').forEach(btn => {
+btn.addEventListener('click', () => {
+const expanded = btn.getAttribute('aria-expanded') === 'true';
+// Close all
+document.querySelectorAll('.faq-question').forEach(b => b.setAttribute('aria-expanded', 'false'));
+document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
+// Open this one if it was closed
+if (!expanded) {
+btn.setAttribute('aria-expanded', 'true');
+btn.nextElementSibling.classList.add('open');
+}
+});
+});
+</script>
 
 </body>
 </html>

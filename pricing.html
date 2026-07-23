@@ -28,6 +28,7 @@
 <a href="index.html#gallery">Aperçu</a>
 <a href="faq.html">FAQ</a>
 <a href="privacy.html">Confidentialité</a>
+<a href="conditions-utilisation.html">CGU</a>
 <a href="index.html#download">Télécharger</a>
 <a href="login.html" class="nav-cta">Compte</a>
 </div>
@@ -119,10 +120,14 @@
 <div class="footer-col">
 <h4>Liens</h4>
 <a href="index.html#features">Fonctionnalités</a>
-<a href="pricing.html">Tarifs</a>
+<a href="pricing.html" class="active">Tarifs</a>
+<a href="index.html#gallery">Aperçu</a>
+<a href="index.html#download">Télécharger</a>
 <a href="faq.html">FAQ</a>
 <a href="login.html">Compte</a>
-<a href="privacy.html">Confidentialité</a>
+<a href="account.html">Paramètres</a>
+<a href="privacy.html">Politique de confidentialité</a>
+<a href="conditions-utilisation.html">Conditions d'utilisation</a>
 </div>
 <div class="footer-col">
 <h4>Légal</h4>
@@ -193,6 +198,12 @@ starterBtn.outerHTML = '<span style="display:inline-flex;align-items:center;gap:
 premiumBtn.outerHTML = '<span style="display:inline-flex;align-items:center;gap:6px;padding:14px 32px;background:rgba(255,255,255,0.05);border-radius:8px;color:rgba(255,255,255,0.4);font-weight:600;font-size:14px;letter-spacing:0.5px"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Actif</span>';
 }
 })();
+
+// Scroll animation
+const observer = new IntersectionObserver((entries) => {
+entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 </script>
 </body>
 </html>

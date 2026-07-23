@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paramètres du compte - AniStream VF</title>
+<meta name="description" content="Gérez votre compte AniStream : modifier votre profil, changer de mot de passe, gérer votre abonnement, supprimer votre compte.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://anistreamvf.github.io/account.html">
+<meta property="og:title" content="Paramètres du compte - AniStream VF">
+<meta property="og:description" content="Gérez votre compte et abonnement AniStream.">
+<meta property="og:url" content="https://anistreamvf.github.io/account.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AniStream VF">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.settings { max-width: 640px; margin: 0 auto; padding: 60px 24px 100px; }
+.settings-card { padding: 32px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-card); margin-bottom: 20px; }
+.settings-card h2 { font-size: 17px; font-weight: 700; text-align: left; margin-bottom: 20px; letter-spacing: 0.5px; }
+.settings-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); gap: 16px; }
+.settings-row:last-child { border-bottom: none; }
+.settings-label { font-size: 13px; color: var(--text-tertiary); min-width: 100px; }
+.settings-value { font-size: 14px; color: var(--text); flex: 1; text-align: right; }
+.settings-input { background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: 6px; color: #fff; padding: 10px 14px; font-size: 14px; font-family: var(--font-body); outline: none; width: 100%; transition: border-color var(--transition); }
+.settings-input:focus { border-color: rgba(255,255,255,0.3); }
+.settings-select { background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: 6px; color: #fff; padding: 10px 14px; font-size: 14px; font-family: var(--font-body); outline: none; cursor: pointer; }
+.settings-actions { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+.btn-danger { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,82,82,0.3); border-radius: var(--radius-sm); color: #ff5252; text-decoration: none; font-weight: 600; font-size: 13px; cursor: pointer; transition: all var(--transition); }
+.btn-danger:hover { background: rgba(255,82,82,0.1); border-color: #ff5252; }
+.btn-secondary { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); text-decoration: none; font-weight: 600; font-size: 13px; cursor: pointer; transition: all var(--transition); }
+.btn-secondary:hover { background: rgba(255,255,255,0.1); }
+.settings-msg { font-size: 13px; margin-top: 8px; display: none; }
+.settings-msg.success { color: #69f0ae; }
+.settings-msg.error { color: #ff5252; }
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 200; display: none; align-items: center; justify-content: center; padding: 24px; }
+.modal-overlay.active { display: flex; }
+.modal { max-width: 440px; width: 100%; padding: 40px; border: 1px solid var(--border); border-radius: 16px; background: #0a0a0a; }
+.modal h2 { font-size: 20px; font-weight: 700; text-align: left; margin-bottom: 12px; }
+.modal p { font-size: 14px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 24px; }
+.modal-actions { display: flex; gap: 12px; }
+</style>
+</head>
+<body>
+
+<header>
+<nav>
+<a href="/" class="logo">AniStream</a>
+<div class="nav-links">
+<a href="index.html#features">Fonctionnalités</a>
+<a href="pricing.html">Tarifs</a>
+<a href="index.html#gallery">Aperçu</a>
+<a href="faq.html">FAQ</a>
+<a href="privacy.html">Confidentialité</a>
+<a href="conditions-utilisation.html">CGU</a>
+<a href="index.html#download">Télécharger</a>
+<a href="login.html" class="nav-cta">Compte</a>
+</div>
+</nav>
+</header>
+
+<section class="page-header">
+<h1>Paramètres du compte</h1>
+<p>Gérez vos informations personnelles et votre abonnement.</p>
+</section>
+
+<section class="settings" id="app">
+
+<!-- Profile -->
+<div class="settings-card" id="profile-card">
+<h2>Profil</h2>
+<div class="settings-row"><span class="settings-label">Email</span><span class="settings-value" id="display-email">—</span></div>
+<div class="settings-row"><span class="settings-label">Nom</span><span class="settings-value" id="display-name">—</span></div>
+<div class="settings-row"><span class="settings-label">Langue</span><span class="settings-value" id="display-lang">—</span></div>
+<div class="settings-row"><span class="settings-label">Plan</span><span class="settings-value" id="display-plan">—</span></div>
+<div class="settings-row" id="expiry-row" style="display:none"><span class="settings-label">Expire le</span><span class="settings-value" id="display-expiry">—</span></div>
+</div>
+
+<!-- Edit Name -->
+<div class="settings-card">
+<h2>Modifier le nom</h2>
+<input class="settings-input" id="input-name" placeholder="Nouveau nom" style="margin-bottom:12px">
+<div class="settings-actions">
+<button class="btn-secondary" onclick="updateName()">Enregistrer</button>
+</div>
+<div class="settings-msg" id="msg-name"></div>
+</div>
+
+<!-- Change Email -->
+<div class="settings-card">
+<h2>Changer d'email</h2>
+<input class="settings-input" id="input-email" placeholder="Nouvel email" type="email" style="margin-bottom:12px">
+<div class="settings-actions">
+<button class="btn-secondary" onclick="updateEmail()">Enregistrer</button>
+</div>
+<div class="settings-msg" id="msg-email"></div>
+</div>
+
+<!-- Change Password -->
+<div class="settings-card">
+<h2>Changer le mot de passe</h2>
+<input class="settings-input" id="input-pass" placeholder="Nouveau mot de passe" type="password" style="margin-bottom:12px">
+<input class="settings-input" id="input-pass-confirm" placeholder="Confirmer le mot de passe" type="password" style="margin-bottom:12px">
+<div class="settings-actions">
+<button class="btn-secondary" onclick="updatePassword()">Enregistrer</button>
+</div>
+<div class="settings-msg" id="msg-pass"></div>
+</div>
+
+<!-- Language -->
+<div class="settings-card">
+<h2>Langue préférée</h2>
+<select class="settings-select" id="select-lang" style="margin-bottom:12px">
+<option value="vf">VF</option>
+<option value="vostfr">VOSTFR</option>
+</select>
+<div class="settings-actions">
+<button class="btn-secondary" onclick="updateLanguage()">Enregistrer</button>
+</div>
+<div class="settings-msg" id="msg-lang"></div>
+</div>
+
+<!-- Subscription -->
+<div class="settings-card" id="sub-card">
+<h2>Abonnement</h2>
+<div class="settings-row"><span class="settings-label">Statut</span><span class="settings-value" id="sub-status">—</span></div>
+<div class="settings-actions">
+<a href="pricing.html" class="btn-primary" style="padding:12px 24px;font-size:13px">Gérer l'abonnement</a>
+</div>
+</div>
+
+<!-- Danger Zone -->
+<div class="settings-card" style="border-color:rgba(255,82,82,0.2)">
+<h2 style="color:#ff5252">Zone dangereuse</h2>
+<p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;line-height:1.7">Ces actions sont irréversibles.</p>
+<div class="settings-actions">
+<button class="btn-danger" onclick="showDeleteModal()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg> Supprimer le compte</button>
+<button class="btn-secondary" onclick="logout()">Se déconnecter</button>
+</div>
+</div>
+
+</section>
+
+<!-- Delete Modal -->
+<div class="modal-overlay" id="delete-modal">
+<div class="modal">
+<h2>Supprimer le compte</h2>
+<p>Cette action est définitive et irréversible. Toutes vos données (profil, historique, watchlist, abonnements) seront supprimées de nos serveurs.</p>
+<div class="modal-actions">
+<button class="btn-danger" onclick="deleteAccount()" id="delete-confirm-btn">Confirmer la suppression</button>
+<button class="btn-secondary" onclick="hideDeleteModal()">Annuler</button>
+</div>
+<div class="settings-msg" id="msg-delete"></div>
+</div>
+</div>
+
+<footer>
+<div class="footer-content">
+<div class="footer-col">
+<h4>AniStream</h4>
+<p>Application de streaming anime gratuite et open-source.</p>
+</div>
+<div class="footer-col">
+<h4>Liens</h4>
+<a href="index.html#features">Fonctionnalités</a>
+<a href="pricing.html">Tarifs</a>
+<a href="index.html#gallery">Aperçu</a>
+<a href="index.html#download">Télécharger</a>
+<a href="faq.html">FAQ</a>
+<a href="login.html">Compte</a>
+<a href="privacy.html">Politique de confidentialité</a>
+<a href="conditions-utilisation.html">Conditions d'utilisation</a>
+</div>
+<div class="footer-col">
+<h4>Légal</h4>
+<p class="legal-text">Cette application utilise ExoPlayer pour lire des vidéos hébergées par des tiers. Le contenu diffusé est fourni par les utilisateurs et provient de sources externes indépendantes. AniStream ne stocke aucun fichier vidéo sur ses serveurs.</p>
+</div>
+</div>
+<div class="footer-bottom">
+<p>&copy; 2026 AniStream. Tous droits réservés.</p>
+</div>
+</footer>
+
+<script>
+const SUPABASE_URL = 'https://fxqrmcinehnuwmkvogcl.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4cXJtY2luZWhudXdta3ZvZ2NsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0OTEzMzAsImV4cCI6MjEwMDA2NzMzMH0.JEnZl17WIpPL42fcMRnOx25HRu7zbaUkPilN9PSFhUM';
+
+let session = JSON.parse(localStorage.getItem('anistream_session') || 'null');
+
+function showMsg(id, text, type) {
+const el = document.getElementById(id);
+el.textContent = text;
+el.className = 'settings-msg ' + type;
+el.style.display = 'block';
+setTimeout(() => el.style.display = 'none', 4000);
+}
+
+async function api(path, options = {}) {
+const headers = { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' };
+const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, { ...options, headers: { ...headers, ...options.headers } });
+if (!res.ok) { const txt = await res.text(); throw new Error(txt); }
+return res;
+}
+
+// Load profile
+(async function loadProfile() {
+if (!session) { window.location.href = 'login.html'; return; }
+try {
+const r = await api('profiles?id=eq.' + session.id);
+const profiles = await r.json();
+const p = profiles[0];
+if (!p) return;
+document.getElementById('display-email').textContent = p.email;
+document.getElementById('display-name').textContent = p.name;
+document.getElementById('display-lang').textContent = (p.language || 'vf').toUpperCase();
+const plan = p.subscription_plan || 'free';
+document.getElementById('display-plan').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+if (plan !== 'free' && p.subscription_end) {
+const expiry = document.getElementById('display-expiry');
+expiry.textContent = new Date(p.subscription_end).toLocaleDateString('fr-FR');
+document.getElementById('expiry-row').style.display = '';
+document.getElementById('sub-status').textContent = 'Actif';
+} else {
+document.getElementById('sub-status').textContent = 'Free — Aucun abonnement actif';
+}
+document.getElementById('select-lang').value = p.language || 'vf';
+document.getElementById('input-name').value = p.name;
+document.getElementById('input-email').value = p.email;
+} catch(e) { console.error('Load profile error:', e); }
+})();
+
+async function updateName() {
+const name = document.getElementById('input-name').value.trim();
+if (!name) return;
+try { await api('profiles?id=eq.' + session.id, { method: 'PATCH', body: JSON.stringify({ name }) });
+session.name = name; localStorage.setItem('anistream_session', JSON.stringify(session));
+document.getElementById('display-name').textContent = name;
+showMsg('msg-name', 'Nom mis à jour', 'success');
+} catch(e) { showMsg('msg-name', 'Erreur: ' + e.message, 'error'); }
+}
+
+async function updateEmail() {
+const email = document.getElementById('input-email').value.trim().toLowerCase();
+if (!email) return;
+try { await api('profiles?id=eq.' + session.id, { method: 'PATCH', body: JSON.stringify({ email }) });
+session.email = email; localStorage.setItem('anistream_session', JSON.stringify(session));
+document.getElementById('display-email').textContent = email;
+showMsg('msg-email', 'Email mis à jour', 'success');
+} catch(e) { showMsg('msg-email', 'Erreur: ' + e.message, 'error'); }
+}
+
+async function updatePassword() {
+const pass = document.getElementById('input-pass').value;
+const confirm = document.getElementById('input-pass-confirm').value;
+if (!pass) return;
+if (pass !== confirm) { showMsg('msg-pass', 'Les mots de passe ne correspondent pas', 'error'); return; }
+if (pass.length < 6) { showMsg('msg-pass', 'Minimum 6 caractères', 'error'); return; }
+try {
+const salt = dcodeIO.bcrypt.genSaltSync(12);
+const hash = dcodeIO.bcrypt.hashSync(pass, salt);
+await api('profiles?id=eq.' + session.id, { method: 'PATCH', body: JSON.stringify({ password_hash: hash }) });
+showMsg('msg-pass', 'Mot de passe mis à jour', 'success');
+document.getElementById('input-pass').value = ''; document.getElementById('input-pass-confirm').value = '';
+} catch(e) { showMsg('msg-pass', 'Erreur: ' + e.message, 'error'); }
+}
+
+async function updateLanguage() {
+const lang = document.getElementById('select-lang').value;
+try { await api('profiles?id=eq.' + session.id, { method: 'PATCH', body: JSON.stringify({ language: lang }) });
+session.language = lang; localStorage.setItem('anistream_session', JSON.stringify(session));
+document.getElementById('display-lang').textContent = lang.toUpperCase();
+showMsg('msg-lang', 'Langue mise à jour', 'success');
+} catch(e) { showMsg('msg-lang', 'Erreur: ' + e.message, 'error'); }
+}
+
+function showDeleteModal() { document.getElementById('delete-modal').classList.add('active'); }
+function hideDeleteModal() { document.getElementById('delete-modal').classList.remove('active'); }
+
+async function deleteAccount() {
+const btn = document.getElementById('delete-confirm-btn');
+btn.disabled = true; btn.textContent = 'Suppression...';
+try {
+// Delete from Supabase
+await api('profiles?id=eq.' + session.id, { method: 'DELETE' });
+// Clear local session
+localStorage.removeItem('anistream_session');
+window.location.href = 'index.html';
+} catch(e) {
+showMsg('msg-delete', 'Erreur: ' + e.message, 'error');
+btn.disabled = false; btn.textContent = 'Confirmer la suppression';
+}
+}
+
+function logout() {
+localStorage.removeItem('anistream_session');
+window.location.href = 'login.html';
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
+
+</body>
+</html>
