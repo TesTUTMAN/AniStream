@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
 <style>
 .auth-form { max-width: 400px; margin: 0 auto; padding: 40px 0; }
 .auth-form input { width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; color: #fff; font-size: 15px; font-family: 'Inter', sans-serif; outline: none; transition: 0.2s; }
@@ -87,7 +88,13 @@
 <script>
 const SUPABASE_URL = 'https://fxqrmcinehnuwmkvogcl.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4cXJtY2luZWhudXdta3ZvZ2NsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0OTEzMzAsImV4cCI6MjEwMDA2NzMzMH0.JEnZl17WIpPL42fcMRnOx25HRu7zbaUkPilN9PSFhUM';
-const AUTH_URL = SUPABASE_URL + '/functions/v1/auth-login';
+
+async function api(path, options = {}) {
+  const headers = { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' };
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, { ...options, headers: { ...headers, ...options.headers } });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
 
 let isRegister = false;
 let session = JSON.parse(localStorage.getItem('anistream_session') || 'null');
@@ -106,79 +113,89 @@ const loginForm = document.getElementById('login-form');
 const loginHeader = document.getElementById('login-header');
 const accountArea = document.getElementById('account-area');
 
-async function api(path, options = {}) {
-const headers = { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' };
-const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, { ...options, headers: { ...headers, ...options.headers } });
-if (!res.ok) { const text = await res.text(); throw new Error(text); }
-return res.json();
-}
-
 function showLogin() { loginForm.style.display = 'block'; loginHeader.style.display = 'block'; accountArea.style.display = 'none'; }
 function showAccount() { loginForm.style.display = 'none'; loginHeader.style.display = 'none'; accountArea.style.display = 'block'; }
 
 if (session) {
-if (session.subscriptionEnd && new Date(session.subscriptionEnd) < new Date()) { session.plan = 'free'; localStorage.setItem('anistream_session', JSON.stringify(session)); }
-showAccount();
-document.getElementById('account-email').textContent = session.email || session.id;
-document.getElementById('account-plan').textContent = session.plan || 'Free';
-document.getElementById('account-status').textContent = session.plan === 'starter' || session.plan === 'premium' ? 'Abonnement actif' : 'Aucun abonnement actif';
-const expiryEl = document.getElementById('account-expiry');
-if (session.subscriptionEnd && (session.plan === 'starter' || session.plan === 'premium')) { expiryEl.textContent = 'Expire le ' + new Date(session.subscriptionEnd).toLocaleDateString('fr-FR'); } else { expiryEl.textContent = ''; }
+  if (session.subscriptionEnd && new Date(session.subscriptionEnd) < new Date()) { session.plan = 'free'; localStorage.setItem('anistream_session', JSON.stringify(session)); }
+  showAccount();
+  document.getElementById('account-email').textContent = session.email || session.id;
+  document.getElementById('account-plan').textContent = session.plan || 'Free';
+  document.getElementById('account-status').textContent = session.plan === 'starter' || session.plan === 'premium' ? 'Abonnement actif' : 'Aucun abonnement actif';
+  const expiryEl = document.getElementById('account-expiry');
+  if (session.subscriptionEnd && (session.plan === 'starter' || session.plan === 'premium')) { expiryEl.textContent = 'Expire le ' + new Date(session.subscriptionEnd).toLocaleDateString('fr-FR'); } else { expiryEl.textContent = ''; }
 }
 
 toggleLink.addEventListener('click', () => {
-isRegister = !isRegister;
-nameField.style.display = isRegister ? 'block' : 'none';
-authBtn.textContent = isRegister ? "S'inscrire" : 'Se connecter';
-authTitle.textContent = isRegister ? 'Inscription' : 'Connexion';
-authSub.textContent = isRegister ? 'Créez votre compte AniStream.' : 'Connectez-vous à votre compte.';
-toggleText.textContent = isRegister ? 'Déjà un compte ?' : 'Pas encore de compte ?';
-toggleLink.textContent = isRegister ? 'Se connecter' : 'Créer un compte';
-authError.style.display = 'none';
+  isRegister = !isRegister;
+  nameField.style.display = isRegister ? 'block' : 'none';
+  authBtn.textContent = isRegister ? "S'inscrire" : 'Se connecter';
+  authTitle.textContent = isRegister ? 'Inscription' : 'Connexion';
+  authSub.textContent = isRegister ? 'Créez votre compte AniStream.' : 'Connectez-vous à votre compte.';
+  toggleText.textContent = isRegister ? 'Déjà un compte ?' : 'Pas encore de compte ?';
+  toggleLink.textContent = isRegister ? 'Se connecter' : 'Créer un compte';
+  authError.style.display = 'none';
 });
 
 authBtn.addEventListener('click', async () => {
-const email = emailInput.value.trim();
-const password = passInput.value.trim();
-const username = nameInput.value.trim();
-if (!email || !password || (isRegister && !username)) { authError.textContent = 'Tous les champs sont requis'; authError.style.display = 'block'; return; }
-authError.style.display = 'none';
-authBtn.disabled = true;
-authBtn.textContent = 'Chargement...';
-try {
-if (isRegister) {
-const res = await fetch(AUTH_URL, { method: 'POST', headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password, register: true, name: username }) });
-if (!res.ok) { const err = await res.json(); throw new Error(err.error || 'Erreur'); }
-const p = await res.json();
-session = p;
-localStorage.setItem('anistream_session', JSON.stringify(session));
-authSuccess.textContent = 'Compte créé !'; authSuccess.style.display = 'block';
-setTimeout(() => window.location.href = 'pricing.html', 800);
-} else {
-const res = await fetch(AUTH_URL, { method: 'POST', headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
-if (!res.ok) { const err = await res.json(); throw new Error(err.error || 'Email ou mot de passe incorrect'); }
-const p = await res.json();
-session = { id: p.id, email: p.email, name: p.name, language: p.language || 'vf', plan: p.plan || 'free', subscriptionEnd: p.subscriptionEnd || null };
-if (session.subscriptionEnd && new Date(session.subscriptionEnd) < new Date()) { session.plan = 'free'; }
-localStorage.setItem('anistream_session', JSON.stringify(session));
-showAccount();
-document.getElementById('account-email').textContent = session.email;
-document.getElementById('account-plan').textContent = session.plan === 'starter' || session.plan === 'premium' ? session.plan.charAt(0).toUpperCase() + session.plan.slice(1) : 'Free';
-document.getElementById('account-status').textContent = session.plan === 'starter' || session.plan === 'premium' ? 'Abonnement actif' : 'Aucun abonnement actif';
-const expiryEl = document.getElementById('account-expiry');
-if (session.subscriptionEnd && (session.plan === 'starter' || session.plan === 'premium')) { expiryEl.textContent = 'Expire le ' + new Date(session.subscriptionEnd).toLocaleDateString('fr-FR'); } else { expiryEl.textContent = ''; }
-authSuccess.textContent = 'Connecté !'; authSuccess.style.display = 'block';
-setTimeout(() => authSuccess.style.display = 'none', 2000);
-}
-} catch (e) { authError.textContent = e.message; authError.style.display = 'block'; }
-authBtn.disabled = false;
-authBtn.textContent = isRegister ? "S'inscrire" : 'Se connecter';
+  const email = emailInput.value.trim().toLowerCase();
+  const password = passInput.value.trim();
+  const username = nameInput.value.trim();
+  if (!email || !password || (isRegister && !username)) { authError.textContent = 'Tous les champs sont requis'; authError.style.display = 'block'; return; }
+  authError.style.display = 'none';
+  authBtn.disabled = true;
+  authBtn.textContent = 'Chargement...';
+  try {
+    if (isRegister) {
+      // Check existing email
+      const existing = await api('profiles?email=eq.' + encodeURIComponent(email) + '&select=id');
+      if (existing.length > 0) throw new Error('Cet email est déjà utilisé');
+      // Hash password client-side with bcryptjs
+      const salt = dcodeIO.bcrypt.genSaltSync(12);
+      const hash = dcodeIO.bcrypt.hashSync(password, salt);
+      const id = crypto.randomUUID();
+      await api('profiles', { method: 'POST', body: JSON.stringify({ id, name: username, email, password_hash: hash, language: 'vf' }) });
+      session = { id, email, name: username, language: 'vf', plan: 'free' };
+      localStorage.setItem('anistream_session', JSON.stringify(session));
+      authSuccess.textContent = 'Compte créé !'; authSuccess.style.display = 'block';
+      setTimeout(() => window.location.href = 'pricing.html', 800);
+    } else {
+      // Fetch profile by email
+      const profiles = await api('profiles?email=eq.' + encodeURIComponent(email));
+      if (profiles.length === 0) throw new Error('Email ou mot de passe incorrect');
+      const profile = profiles[0];
+      if (!profile.password_hash) throw new Error('Email ou mot de passe incorrect');
+      // Normalize $2b$ -> $2a$ and compare
+      const pwHash = profile.password_hash.replace(/^\$2b\$/, '$2a$');
+      const match = dcodeIO.bcrypt.compareSync(password, pwHash);
+      if (!match) throw new Error('Email ou mot de passe incorrect');
+      // Check subscription expiry
+      let plan = profile.subscription_plan || 'free';
+      if (plan !== 'free' && profile.subscription_end) {
+        if (new Date(profile.subscription_end) < new Date()) plan = 'free';
+      }
+      session = { id: profile.id, email: profile.email, name: profile.name, language: profile.language || 'vf', plan, subscriptionEnd: profile.subscription_end || null };
+      if (session.subscriptionEnd && new Date(session.subscriptionEnd) < new Date()) session.plan = 'free';
+      localStorage.setItem('anistream_session', JSON.stringify(session));
+      showAccount();
+      document.getElementById('account-email').textContent = session.email;
+      document.getElementById('account-plan').textContent = session.plan === 'starter' || session.plan === 'premium' ? session.plan.charAt(0).toUpperCase() + session.plan.slice(1) : 'Free';
+      document.getElementById('account-status').textContent = session.plan === 'starter' || session.plan === 'premium' ? 'Abonnement actif' : 'Aucun abonnement actif';
+      const expiryEl = document.getElementById('account-expiry');
+      if (session.subscriptionEnd && (session.plan === 'starter' || session.plan === 'premium')) expiryEl.textContent = 'Expire le ' + new Date(session.subscriptionEnd).toLocaleDateString('fr-FR');
+      else expiryEl.textContent = '';
+      authSuccess.textContent = 'Connecté !'; authSuccess.style.display = 'block';
+      setTimeout(() => authSuccess.style.display = 'none', 2000);
+    }
+  } catch (e) { authError.textContent = e.message; authError.style.display = 'block'; }
+  authBtn.disabled = false;
+  authBtn.textContent = isRegister ? "S'inscrire" : 'Se connecter';
 });
 
 document.getElementById('logout-btn')?.addEventListener('click', () => {
-localStorage.removeItem('anistream_session');
-session = null;
-showLogin();
+  localStorage.removeItem('anistream_session');
+  session = null;
+  showLogin();
 });
 </script>
 
