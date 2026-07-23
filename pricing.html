@@ -67,7 +67,7 @@
 <li><span class="check">&#10003;</span> Streaming HD</li>
 <li><span class="check">&#10003;</span> Watch Party</li>
 </ul>
-<a href="#subscribe" class="btn-primary" onclick="return handleSubscribe('starter')">S'abonner</a>
+<a href="#subscribe" class="btn-primary" id="starter-btn" onclick="return handleSubscribe('starter')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l1.5 4.5L18 5l-2 4.5L21 12l-4.5 1.5L18 18l-4.5-2L12 20l-1.5-4.5L6 18l2-4.5L3 12l4.5-1.5L6 5l4.5 1.5L12 2z"/></svg> S'abonner</a>
 </div>
 
 <div class="pricing-card">
@@ -82,7 +82,7 @@
 <li><span class="check">&#10003;</span> Accès anticipé aux nouveautés</li>
 <li><span class="check">&#10003;</span> Support prioritaire</li>
 </ul>
-<a href="#subscribe" class="btn-outline" onclick="return handleSubscribe('premium')">S'abonner</a>
+<a href="#subscribe" class="btn-outline" id="premium-btn" onclick="return handleSubscribe('premium')">S'abonner</a>
 </div>
 
 </div>
@@ -120,11 +120,9 @@
 <h4>Liens</h4>
 <a href="index.html#features">Fonctionnalités</a>
 <a href="pricing.html">Tarifs</a>
-<a href="index.html#gallery">Aperçu</a>
-<a href="index.html#download">Télécharger</a>
 <a href="faq.html">FAQ</a>
 <a href="login.html">Compte</a>
-<a href="privacy.html">Politique de confidentialité</a>
+<a href="privacy.html">Confidentialité</a>
 </div>
 <div class="footer-col">
 <h4>Légal</h4>
@@ -140,7 +138,6 @@
 function handleSubscribe(plan) {
 const session = JSON.parse(localStorage.getItem('anistream_session') || 'null');
 if (!session) { window.location.href = 'login.html'; return false; }
-// Try Stripe checkout, fallback to offline/demo mode
 const prices = { starter: 'price_starter_id', premium: 'price_premium_id' };
 const priceId = prices[plan] || '';
 const successUrl = encodeURIComponent(window.location.origin + '/payment-success.html?plan=' + plan);
@@ -156,6 +153,46 @@ else window.location.href = 'payment-success.html?plan=' + plan + '&offline=1';
 }).catch(() => { window.location.href = 'payment-success.html?plan=' + plan + '&offline=1'; });
 return false;
 }
+
+// Check subscription status and update UI
+(async function() {
+const session = JSON.parse(localStorage.getItem('anistream_session') || 'null');
+const SUPABASE_URL = 'https://fxqrmcinehnuwmkvogcl.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4cXJtY2luZWhudXdta3ZvZ2NsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0OTEzMzAsImV4cCI6MjEwMDA2NzMzMH0.JEnZl17WIpPL42fcMRnOx25HRu7zbaUkPilN9PSFhUM';
+
+let plan = null;
+let subEnd = null;
+
+if (session) {
+// Check localStorage first
+plan = session.plan;
+subEnd = session.subscriptionEnd;
+// Also fetch from Supabase for latest status
+try {
+const r = await fetch(SUPABASE_URL + '/rest/v1/profiles?id=eq.' + session.id + '&select=subscription_plan,subscription_end', { headers: { 'apikey': SUPABASE_ANON } });
+const profiles = await r.json();
+if (profiles && profiles.length > 0) {
+if (profiles[0].subscription_plan && profiles[0].subscription_plan !== 'free') {
+plan = profiles[0].subscription_plan;
+subEnd = profiles[0].subscription_end;
+}
+}
+} catch(e) { /* silent fallback to localStorage */ }
+}
+
+const expired = subEnd && new Date(subEnd) < new Date();
+const isActive = plan && (plan === 'starter' || plan === 'premium') && !expired;
+const starterBtn = document.getElementById('starter-btn');
+const premiumBtn = document.getElementById('premium-btn');
+
+if (isActive && plan === 'starter') {
+starterBtn.outerHTML = '<span style="display:inline-flex;align-items:center;gap:6px;padding:14px 32px;background:rgba(255,255,255,0.05);border-radius:8px;color:rgba(255,255,255,0.4);font-weight:600;font-size:14px;letter-spacing:0.5px"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Actif</span>';
+premiumBtn.textContent = 'Améliorer';
+} else if (isActive && plan === 'premium') {
+starterBtn.outerHTML = '<span style="display:inline-flex;align-items:center;gap:6px;padding:14px 32px;background:rgba(255,255,255,0.05);border-radius:8px;color:rgba(255,255,255,0.4);font-weight:600;font-size:14px;letter-spacing:0.5px"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Actif</span>';
+premiumBtn.outerHTML = '<span style="display:inline-flex;align-items:center;gap:6px;padding:14px 32px;background:rgba(255,255,255,0.05);border-radius:8px;color:rgba(255,255,255,0.4);font-weight:600;font-size:14px;letter-spacing:0.5px"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Actif</span>';
+}
+})();
 </script>
 </body>
 </html>
