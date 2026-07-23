@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paiement réussi - AniStream</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+<nav>
+<a href="/" class="logo">AniStream</a>
+<div class="nav-links">
+<a href="index.html#features">Fonctionnalités</a>
+<a href="pricing.html">Tarifs</a>
+<a href="faq.html">FAQ</a>
+<a href="login.html" class="nav-cta">Compte</a>
+</div>
+</nav>
+</header>
+
+<section class="page-header">
+<h1>Paiement réussi !</h1>
+<p>Merci pour votre abonnement.</p>
+</section>
+
+<section class="pricing-cta" style="padding: 40px 24px;">
+<div class="download-card">
+<div class="feature-icon" style="font-size:48px;color:#69f0ae">&#10003;</div>
+<h2 style="font-size:24px;font-family:'Unbounded',sans-serif;margin-bottom:8px">Abonnement activé</h2>
+<p style="color:rgba(255,255,255,0.5);margin-bottom:20px">Votre abonnement est actif pour 30 jours.</p>
+<a href="index.html" class="btn-primary">Retourner à l'accueil</a>
+<p style="margin-top:12px;font-size:13px;color:rgba(255,255,255,0.25)">L'abonnement sera renouvelé automatiquement. Vous pouvez annuler à tout moment.</p>
+</div>
+</section>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const plan = params.get('plan') || 'starter';
+const session = JSON.parse(localStorage.getItem('anistream_session') || 'null');
+if (session) {
+session.plan = plan;
+session.subscriptionEnd = new Date(Date.now() + 30*24*60*60*1000).toISOString();
+localStorage.setItem('anistream_session', JSON.stringify(session));
+}
+</script>
+
+<footer>
+<div class="footer-content">
+<div class="footer-col">
+<h4>AniStream</h4>
+<p>Application de streaming anime gratuite et open-source.</p>
+</div>
+<div class="footer-col">
+<h4>Liens</h4>
+<a href="index.html#features">Fonctionnalités</a>
+<a href="pricing.html">Tarifs</a>
+<a href="faq.html">FAQ</a>
+<a href="login.html">Compte</a>
+<a href="privacy.html">Confidentialité</a>
+</div>
+<div class="footer-col">
+<h4>Légal</h4>
+<p class="legal-text">Cette application utilise ExoPlayer pour lire des vidéos hébergées par des tiers.</p>
+</div>
+</div>
+<div class="footer-bottom">
+<p>&copy; 2026 AniStream. Tous droits réservés.</p>
+</div>
+</footer>
+
+</body>
+</html>

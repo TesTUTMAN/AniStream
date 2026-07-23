@@ -140,8 +140,20 @@
 function handleSubscribe(plan) {
 const session = JSON.parse(localStorage.getItem('anistream_session') || 'null');
 if (!session) { window.location.href = 'login.html'; return false; }
-alert('Redirection vers le paiement ' + (plan === 'starter' ? 'Starter (4,99€)' : 'Premium (9,99€)') + '...\n\nVous allez être redirigé vers Stripe.');
-return true;
+const prices = { starter: 'price_starter_id', premium: 'price_premium_id' };
+const priceId = prices[plan] || '';
+const successUrl = encodeURIComponent(window.location.origin + '/payment-success.html?plan=' + plan);
+const cancelUrl = encodeURIComponent(window.location.origin + '/pricing.html');
+const edgeUrl = 'https://fxqrmcinehnuwmkvogcl.supabase.co/functions/v1/stripe-checkout';
+fetch(edgeUrl, {
+method: 'POST',
+headers: { 'Authorization': 'Bearer ' + (session.token || ''), 'Content-Type': 'application/json', 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4cXJtY2luZWhudXdta3ZvZ2NsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0OTEzMzAsImV4cCI6MjEwMDA2NzMzMH0.JEnZl17WIpPL42fcMRnOx25HRu7zbaUkPilN9PSFhUM' },
+body: JSON.stringify({ priceId, successUrl, cancelUrl })
+}).then(r => r.json()).then(data => {
+if (data.url) window.location.href = data.url;
+else alert('Erreur de paiement. Réessayez plus tard.');
+}).catch(() => { window.location.href = 'payment-success.html?plan=' + plan + '&offline=1'; });
+return false;
 }
 </script>
 </body>

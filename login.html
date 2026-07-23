@@ -75,6 +75,7 @@
 <p id="account-email" style="font-size:16px;font-weight:600;margin-bottom:16px"></p>
 <span class="version-badge" id="account-plan" style="display:inline-block;margin-bottom:8px">Free</span>
 <p id="account-status" style="font-size:13px;color:rgba(255,255,255,0.3);margin-top:8px"></p>
+<p id="account-expiry" style="font-size:12px;color:rgba(255,255,255,0.2);margin-top:4px"></p>
 </div>
 <div style="display:flex;flex-direction:column;gap:12px">
 <a href="pricing.html" class="btn-primary" style="text-align:center">Gérer mon abonnement</a>
@@ -83,7 +84,7 @@
 </div>
 </section>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
 <script>
 const SUPABASE_URL = 'https://fxqrmcinehnuwmkvogcl.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4cXJtY2luZWhudXdta3ZvZ2NsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0OTEzMzAsImV4cCI6MjEwMDA2NzMzMH0.JEnZl17WIpPL42fcMRnOx25HRu7zbaUkPilN9PSFhUM';
@@ -116,10 +117,13 @@ function showLogin() { loginForm.style.display = 'block'; loginHeader.style.disp
 function showAccount() { loginForm.style.display = 'none'; loginHeader.style.display = 'none'; accountArea.style.display = 'block'; }
 
 if (session) {
+if (session.subscriptionEnd && new Date(session.subscriptionEnd) < new Date()) { session.plan = 'free'; localStorage.setItem('anistream_session', JSON.stringify(session)); }
 showAccount();
 document.getElementById('account-email').textContent = session.email || session.id;
 document.getElementById('account-plan').textContent = session.plan || 'Free';
 document.getElementById('account-status').textContent = session.plan === 'starter' || session.plan === 'premium' ? 'Abonnement actif' : 'Aucun abonnement actif';
+const expiryEl = document.getElementById('account-expiry');
+if (session.subscriptionEnd && (session.plan === 'starter' || session.plan === 'premium')) { expiryEl.textContent = 'Expire le ' + new Date(session.subscriptionEnd).toLocaleDateString('fr-FR'); } else { expiryEl.textContent = ''; }
 }
 
 toggleLink.addEventListener('click', () => {
@@ -160,12 +164,15 @@ const p = profiles[0];
 if (!p.password_hash) { throw new Error('Email ou mot de passe incorrect'); }
 const match = bcryptjs.compareSync(password, p.password_hash);
 if (!match) { throw new Error('Email ou mot de passe incorrect'); }
-session = { id: p.id, email: p.email, name: p.name, language: p.language || 'vf', plan: p.subscription_plan || 'free' };
+session = { id: p.id, email: p.email, name: p.name, language: p.language || 'vf', plan: p.subscription_plan || 'free', subscriptionEnd: p.subscription_end || null };
+if (session.subscriptionEnd && new Date(session.subscriptionEnd) < new Date()) { session.plan = 'free'; }
 localStorage.setItem('anistream_session', JSON.stringify(session));
 showAccount();
 document.getElementById('account-email').textContent = session.email;
 document.getElementById('account-plan').textContent = session.plan === 'starter' || session.plan === 'premium' ? session.plan.charAt(0).toUpperCase() + session.plan.slice(1) : 'Free';
 document.getElementById('account-status').textContent = session.plan === 'starter' || session.plan === 'premium' ? 'Abonnement actif' : 'Aucun abonnement actif';
+const expiryEl = document.getElementById('account-expiry');
+if (session.subscriptionEnd && (session.plan === 'starter' || session.plan === 'premium')) { expiryEl.textContent = 'Expire le ' + new Date(session.subscriptionEnd).toLocaleDateString('fr-FR'); } else { expiryEl.textContent = ''; }
 authSuccess.textContent = 'Connecté !'; authSuccess.style.display = 'block';
 setTimeout(() => authSuccess.style.display = 'none', 2000);
 }
