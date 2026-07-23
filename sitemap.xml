@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://anistreamvf.github.io/anistream.github.io/</loc>
+    <loc>https://anistreamvf.github.io/</loc>
     <lastmod>2026-07-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://anistreamvf.github.io/anistream.github.io/pricing.html</loc>
+    <loc>https://anistreamvf.github.io/pricing.html</loc>
     <lastmod>2026-07-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://anistreamvf.github.io/anistream.github.io/faq.html</loc>
+    <loc>https://anistreamvf.github.io/faq.html</loc>
     <lastmod>2026-07-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://anistreamvf.github.io/anistream.github.io/privacy.html</loc>
+    <loc>https://anistreamvf.github.io/privacy.html</loc>
     <lastmod>2026-07-23</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://anistreamvf.github.io/anistream.github.io/playstore/privacy.html</loc>
+    <loc>https://anistreamvf.github.io/playstore/privacy.html</loc>
     <lastmod>2026-07-23</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
