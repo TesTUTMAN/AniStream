@@ -39,6 +39,9 @@
 </section>
 
 <script>
+const SUPABASE_URL = 'https://fxqrmcinehnuwmkvogcl.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4cXJtY2luZWhudXdta3ZvZ2NsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0OTEzMzAsImV4cCI6MjEwMDA2NzMzMH0.JEnZl17WIpPL42fcMRnOx25HRu7zbaUkPilN9PSFhUM';
+
 const params = new URLSearchParams(window.location.search);
 const plan = params.get('plan') || 'starter';
 const session = JSON.parse(localStorage.getItem('anistream_session') || 'null');
@@ -46,6 +49,12 @@ if (session) {
 session.plan = plan;
 session.subscriptionEnd = new Date(Date.now() + 30*24*60*60*1000).toISOString();
 localStorage.setItem('anistream_session', JSON.stringify(session));
+// Update backend profile
+fetch(SUPABASE_URL + '/rest/v1/profiles?id=eq.' + session.id, {
+method: 'PATCH',
+headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+body: JSON.stringify({ is_premium: true, subscription_plan: plan, subscription_status: 'active', subscription_end: session.subscriptionEnd })
+}).catch(() => {}); // silent fail if RLS blocks
 }
 </script>
 
